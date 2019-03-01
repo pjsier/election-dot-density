@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chicago 2019 Mayoral Election Results | City Bureau</title>
+    <link rel="shortcut icon" type="image/x-icon" href="https://static1.squarespace.com/static/56cfdde2c2ea51668ffa109d/t/576ceb5ed482e9ee841d6082/favicon.ico"/>
+    <meta name="description" content="View Chicago 2019 election results at the ward and precinct level">
+    <meta name="author" content="City Bureau">
+
+    <meta property="og:site_name" content="Chicago 2019 Election Results">
+    <meta property="og:title" content="Chicago 2019 Election Results">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="View Chicago 2019 election results at the ward and precinct level">
+    <meta property="og:url" content="https://s3.amazonaws.com/chicago-election-2019/index.html">
+    <meta property="og:image" content="https://s3.amazonaws.com/chicago-election-2019/teaser.jpg">
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@city_bureau">
+    <meta name="twitter:creator" content="@city_bureau">
+    <meta name="twitter:description" content="View Chicago 2019 election results at the ward and precinct level">
+    <meta name="twitter:title" content="Chicago 2019 Election Results">
+    <meta name="twitter:image:src" content="https://s3.amazonaws.com/chicago-election-2019/teaser.jpg">
+
+    <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css" />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js"></script>
+    <style>
+        body {
+            background: #fff;
+            color: #333;
+            font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        }
+
+        hr {
+            border-width: 0.5px;
+            border-color: #ccc;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .mapboxgl-popup {
+            min-width: 250px;
+        }
+
+        .mapboxgl-popup-content {
+            max-height: 250px;
+            overflow-y: scroll;
+        }
+
+        .popup-prop {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            margin-bottom: 2px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .popup-prop.area {
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .popup-prop.area.turnout {
+            margin-bottom: 0;
+        }
+
+        .popup-prop.area .popup-prop-value {
+            min-width: 0;
+        }
+
+        .popup-prop:last-child {
+            margin-bottom: 8px;
+        }
+
+        .popup-link {
+            width: 100%;
+        }
+
+        .popup-prop-name {
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .popup-prop-value {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 40%;
+        }
+
+        .popup-prop-value div {
+            text-align: center;
+        }
+
+        .popup-note {
+            font-style: italic;
+        }
+
+        p {
+            margin: 0;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+
+        p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            opacity: 0.7;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+
+        #legend {
+            max-width: 200px;
+            padding: 8px;
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media screen and (max-width: 600px) {
+            #legend {
+                max-width: 100%;
+                left: 8px;
+                right: 8px;
+                bottom: 8px;
+                height: 150px;
+                overflow-y: scroll;
+                -webkit-overflow-scrolling: touch;
+                -moz-box-shadow: inset 0 -10px 10px -10px rgba(0,0,0,0.6);
+                -webkit-box-shadow: inset 0 -10px 10px -10px rgba(0,0,0,0.6);
+                box-shadow: inset 0 -10px 10px -10px rgba(0,0,0,0.6);
+            }                
+
+            #legend p:last-child {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="legend">
+        <p>
+            Each dot represents a vote randomly placed inside a residential parcel of its precinct.
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #e31a1c"></span>
+                <input type="checkbox" name="candidate" checked data-prop="lightfoot" />
+                Lightfoot
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #004E87"></span>
+                <input type="checkbox" name="candidate" checked data-prop="preckwinkle" />
+                Preckwinkle
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #ff7f00"></span>
+                <input type="checkbox" name="candidate" checked data-prop="daley" />
+                Daley
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #33a02c"></span>
+                <input type="checkbox" name="candidate" checked data-prop="wilson" />
+                Wilson
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #8052b2"></span>
+                <input type="checkbox" name="candidate" checked data-prop="mendoza" />
+                Mendoza
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #f781bf"></span>
+                <input type="checkbox" name="candidate" checked data-prop="enyia" />
+                Enyia
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #F5F50A"></span>
+                <input type="checkbox" name="candidate" checked data-prop="joyce" />
+                Joyce
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #a6cee3"></span>
+                <input type="checkbox" name="candidate" checked data-prop="chico" />
+                Chico
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class="color" style="background-color: #ccc"></span>
+                <input type="checkbox" name="candidate" checked data-prop="other" />
+                Other
+            </label>
+        </p>
+    </div>
+    <script src="https://pym.nprapps.org/pym.v1.min.js"></script>
+    <script>
+        var pymChild = new pym.Child();
+        var map = new mapboxgl.Map({
+            container: 'map',
+            hash: true,
+            center: [-87.6559, 41.8332],
+            zoom: 10,
+            style: 'style.json',
+        });
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
+
+        map.on('load', function () {
+            map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+        });
+
+        function updateCheckedLayers() {
+            var hidden = [];
+            var otherCandidates = ["vallas", "mccarthy", "ford", "fioretti", "kozlar", "salesgriffin"];
+            document.querySelectorAll("input[type='checkbox'][name='candidate']").forEach(function (el) {
+                if (!el.checked) {
+                    hidden = hidden.concat(el.dataset.prop === "other" ? otherCandidates : el.dataset.prop);
+                }
+            });
+            map.setFilter("results", ["!in", "candidate"].concat(hidden));
+        }
+
+        document.querySelectorAll("input[type='checkbox']").forEach(function (el) {
+            el.addEventListener("change", updateCheckedLayers);
+        });
+    </script>
+</body>
+
+</html>

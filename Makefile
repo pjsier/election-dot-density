@@ -1,15 +1,25 @@
-.PHONY: all
+.PHONY: all deploy
 .PRECIOUS: input/parcels.geojson input/parcels.shp
 
+S3_BUCKET = chicago-election-2019
 CANDIDATES = lightfoot preckwinkle daley wilson mendoza joyce chico enyia vallas mccarthy ford fioretti kozlar salesgriffin
 CANDIDATE_FIELDS = lightfoot,preckwinkle,daley,wilson,mendoza,joyce,chico,enyia,vallas,mccarthy,ford,fioretti,kozlar,salesgriffin
 RENAME_FIELDS = lightfoot="LORI LIGHTFOOT",preckwinkle="TONI PRECKWINKLE",daley="WILLIAM M. DALEY",wilson="WILLIE L. WILSON",mendoza="SUSANA A. MENDOZA",joyce="JERRY JOYCE",chico="GERY CHICO",enyia="AMARA ENYIA",vallas="PAUL VALLAS",mccarthy="GARRY MCCARTHY",ford="LA SHAWN K. FORD",fioretti="ROBERT 'BOB' FIORETTI",kozlar="JOHN KENNETH KOZLAR",salesgriffin="NEAL SALES-GRIFFIN"
 mapshaper_cmd = node --max_old_space_size=4096 $$(which mapshaper)
 
-all: aggregate-disser.jar
+all: tiles
 
-clean:
-	rm -rf aggregate-disser.* aggregate-disser-master gradle-2.11* input/*.* candidates/*.* output/*.*
+deploy:
+	aws s3 cp ./tiles s3://$(S3_BUCKET)/results-dot-density/ --recursive --acl=public-read --content-encoding=gzip --region=us-east-1
+	aws s3 cp index.html s3://$(S3_BUCKET)/results-dot-density/index.html --acl=public-read --region=us-east-1
+	aws s3 cp style.json s3://$(S3_BUCKET)/results-dot-density/style.json --acl=public-read --region=us-east-1
+
+tiles: output/results.mbtiles
+	mkdir -p $@
+	tile-join --no-tile-size-limit --force -e ./tiles $<
+
+output/results.mbtiles: output/results.geojson
+	tippecanoe -L results:$< --drop-densest-as-needed --maximum-zoom=11 --no-tile-stats --force -B9 --maximum-tile-bytes=1000000 -o $@
 
 output/results.geojson: $(patsubst %, candidates/%.geojson, $(CANDIDATES))
 	mapshaper -i $^ combine-files -merge-layers -o $@
@@ -27,6 +37,7 @@ input/parcels.shp: input/cook-parcels.geojson input/clip.geojson
 	-filter-fields PIN14 \
 	-o $@ format=shapefile
 
+# Create a file with all of Cook County excluding Chicago for erasing from the parcel layer
 input/clip.geojson: input/cook.geojson input/chicago.geojson
 	$(mapshaper_cmd) -i $< -erase $(filter-out $<,$^) remove-slivers -o $@
 
@@ -57,6 +68,7 @@ aggregate-disser-master: aggregate-disser.zip
 aggregate-disser.zip:
 	wget -O $@ https://github.com/conveyal/aggregate-disser/archive/master.zip
 
+# aggregate-disser requires an old version of gradle to build
 gradle-2.11/bin/gradle: gradle-2.11.zip
 	unzip $<
 

@@ -4,6 +4,7 @@ candidates/*
 !candidates/.keep
 output/*
 !output/.keep
+tiles
 *.jar
 *.zip
 aggregate-disser-master
