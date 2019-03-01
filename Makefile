@@ -13,6 +13,7 @@ deploy:
 	aws s3 cp ./tiles s3://$(S3_BUCKET)/results-dot-density/ --recursive --acl=public-read --content-encoding=gzip --region=us-east-1
 	aws s3 cp index.html s3://$(S3_BUCKET)/results-dot-density/index.html --acl=public-read --region=us-east-1
 	aws s3 cp style.json s3://$(S3_BUCKET)/results-dot-density/style.json --acl=public-read --region=us-east-1
+	aws s3 cp img/teaser.jpg s3://$(S3_BUCKET)/results-dot-density/teaser.jpg --acl=public-read --region=us-east-1
 
 tiles: output/results.mbtiles
 	mkdir -p $@
