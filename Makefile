@@ -20,7 +20,7 @@ tiles: output/results.mbtiles
 	tile-join --no-tile-size-limit --force -e ./tiles $<
 
 output/results.mbtiles: output/results.geojson
-	tippecanoe -L results:$< --drop-densest-as-needed --maximum-zoom=11 --no-tile-stats --force -B9 --maximum-tile-bytes=1000000 -o $@
+	tippecanoe -L results:$< --drop-densest-as-needed --maximum-zoom=12 --no-tile-stats --force -B10 --maximum-tile-bytes=1000000 -o $@
 
 output/results.geojson: $(patsubst %, candidates/%.geojson, $(CANDIDATES))
 	mapshaper -i $^ combine-files -merge-layers -o $@
