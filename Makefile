@@ -2,9 +2,10 @@
 .PRECIOUS: input/parcels.geojson input/parcels.shp
 
 S3_BUCKET = chicago-election-2019
-CANDIDATES = lightfoot preckwinkle daley wilson mendoza joyce chico enyia vallas mccarthy ford fioretti kozlar salesgriffin
+CANDIDATES = lightfoot preckwinkle daley wilson mendoza joyce chico enyia vallas mccarthy ford fioretti kozlar #salesgriffin
 CANDIDATE_FIELDS = lightfoot,preckwinkle,daley,wilson,mendoza,joyce,chico,enyia,vallas,mccarthy,ford,fioretti,kozlar,salesgriffin
 RENAME_FIELDS = lightfoot="LORI LIGHTFOOT",preckwinkle="TONI PRECKWINKLE",daley="WILLIAM M. DALEY",wilson="WILLIE L. WILSON",mendoza="SUSANA A. MENDOZA",joyce="JERRY JOYCE",chico="GERY CHICO",enyia="AMARA ENYIA",vallas="PAUL VALLAS",mccarthy="GARRY MCCARTHY",ford="LA SHAWN K. FORD",fioretti="ROBERT 'BOB' FIORETTI",kozlar="JOHN KENNETH KOZLAR",salesgriffin="NEAL SALES-GRIFFIN"
+DENSITY_DIVIDE = 100
 mapshaper_cmd = node --max_old_space_size=4096 $$(which mapshaper)
 
 all: tiles
@@ -18,6 +19,18 @@ deploy:
 tiles: output/results.mbtiles
 	mkdir -p $@
 	tile-join --no-tile-size-limit --force -e ./tiles $<
+
+output/results-density.mbtiles: output/results-density.geojson
+	tippecanoe -L results:$< --drop-densest-as-needed --maximum-zoom=12 --no-tile-stats --force -B10 --maximum-tile-bytes=1000000 -o $@
+
+output/results-density.geojson: $(patsubst %, candidates-density/%.geojson, $(CANDIDATES))
+	mapshaper -i $^ combine-files -merge-layers -o $@
+
+candidates-density/%.geojson: candidates-density/%.csv
+	mapshaper $< -points x=lon y=lat -each 'candidate = "$*"' -filter-fields candidate -o $@
+
+candidates-density/%.csv: input/election-density.shp input/parcels.shp aggregate-disser.jar
+	java -jar aggregate-disser.jar --discrete $< $$(echo '$*' | cut -c1-10) input/parcels.shp ::area:: $@
 
 output/results.mbtiles: output/results.geojson
 	tippecanoe -L results:$< --drop-densest-as-needed --maximum-zoom=12 --no-tile-stats --force -B10 --maximum-tile-bytes=1000000 -o $@
@@ -50,6 +63,11 @@ input/chicago.geojson:
 
 input/cook-parcels.geojson:
 	esri2geojson -f PIN14,BLDGClass --proxy "https://maps.cookcountyil.gov/cookviewer/proxy/tempProxy.ashx?" "https://gis1.cookcountyil.gov/arcgis/rest/services/cookVwrDynmc/MapServer/44" -v $@
+
+input/election-density.shp: input/election.shp
+	mapshaper -i $< \
+	$(foreach c, $(CANDIDATES), -each "$$(echo '$(c)' | cut -c1-10) = Math.floor($$(echo '$(c)' | cut -c1-10) / $(DENSITY_DIVIDE))") \
+	-o $@ format=shapefile
 
 input/election.shp:
 	wget -q -O - $@ https://raw.githubusercontent.com/datamade/chicago-municipal-elections/master/data/municipal_general_2019.geojson | \
