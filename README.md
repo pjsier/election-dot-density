@@ -9,3 +9,15 @@ Requires `tippecanoe`, `pyesridump`, `mapshaper` and `wget`.
 ```bash
 make all
 ```
+
+### All Points
+
+1 point = 1 vote
+
+![Map screenshot all points](./img/full.jpg "Map screenshot all points")
+
+### Sampled Points
+
+1 point = 100 votes
+
+![Map screenshot sampled points](./img/sample.jpg "Map screenshot sampled points")
