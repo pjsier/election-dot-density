@@ -24,7 +24,10 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "https://free.tilehosting.com/data/v3.json?key=O5S1vvXrAWrobL6R3FHs"
+      "maxzoom": 14,
+      "tiles": [
+        "https://s3.us-east-2.amazonaws.com/city-bureau-openmaptiles/{z}/{x}/{y}.pbf"
+      ]
     },
     "results": {
       "type": "vector",
@@ -34,8 +37,8 @@
       ]
     }
   },
-  "sprite": "https://openmaptiles.github.io/positron-gl-style/sprite",
-  "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key=O5S1vvXrAWrobL6R3FHs",
+  "sprite": "https://s3.us-east-2.amazonaws.com/city-bureau-openmaptiles/positron/sprite",
+  "glyphs": "https://s3.us-east-2.amazonaws.com/city-bureau-openmaptiles/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",
@@ -256,8 +259,7 @@
         "text-rotation-alignment": "map",
         "symbol-spacing": 500,
         "text-font": [
-          "Metropolis Medium Italic",
-          "Noto Sans Italic"
+          "Metropolis+Medium+Italic"
         ],
         "text-size": 12
       },
@@ -1508,8 +1510,7 @@
         "text-transform": "uppercase",
         "symbol-spacing": 350,
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "symbol-placement": "line",
         "visibility": "visible",
@@ -1553,8 +1554,7 @@
         "text-size": 10,
         "symbol-spacing": 350,
         "text-font": [
-          "Metropolis Light",
-          "Noto Sans Regular"
+          "Metropolis+Light"
         ],
         "symbol-placement": "line",
         "visibility": "visible",
@@ -1691,8 +1691,7 @@
         "text-size": 10,
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "center",
         "visibility": "visible",
@@ -1736,8 +1735,7 @@
         "text-size": 10,
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "center",
         "visibility": "visible",
@@ -1781,8 +1779,7 @@
         "text-size": 10,
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "left",
         "visibility": "visible",
@@ -1841,8 +1838,7 @@
         },
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "left",
         "visibility": "visible",
@@ -1926,8 +1922,7 @@
         },
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "left",
         "visibility": "visible",
@@ -2006,8 +2001,7 @@
         },
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "left",
         "visibility": "visible",
@@ -2091,8 +2085,7 @@
         },
         "text-transform": "uppercase",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-justify": "left",
         "visibility": "visible",
@@ -2150,8 +2143,7 @@
         "visibility": "visible",
         "text-field": "{name:latin}\n{name:nonlatin}",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-transform": "uppercase",
         "text-size": 10
@@ -2193,8 +2185,7 @@
         "visibility": "visible",
         "text-field": "{name:latin}",
         "text-font": [
-          "Metropolis Light Italic",
-          "Noto Sans Italic"
+          "Metropolis+Light+Italic"
         ],
         "text-transform": "uppercase",
         "text-size": {
@@ -2264,8 +2255,7 @@
         "visibility": "visible",
         "text-field": "{name:latin}",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-transform": "uppercase",
         "text-size": {
@@ -2335,8 +2325,7 @@
         "visibility": "visible",
         "text-field": "{name:latin}",
         "text-font": [
-          "Metropolis Regular",
-          "Noto Sans Regular"
+          "Metropolis+Regular"
         ],
         "text-transform": "uppercase",
         "text-size": {

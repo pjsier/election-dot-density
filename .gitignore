@@ -12,3 +12,4 @@ tiles
 aggregate-disser-master
 gradle-2.11
 .DS_Store
+.vscode
